@@ -30,9 +30,9 @@ class Signature extends StatefulWidget {
 class _SignatureState extends State<Signature> {
   List<Offset> _points = <Offset>[];
 
-  void _panUpdate(DragUpdateDetails details) {
+  _addNewPoint(Offset position) {
     RenderBox referenceBox = context.findRenderObject();
-    Offset localPosition = referenceBox.globalToLocal(details.globalPosition);
+    Offset localPosition = referenceBox.globalToLocal(position);
 
     setState(() {
       _points = new List.from(_points)..add(localPosition);
@@ -44,7 +44,8 @@ class _SignatureState extends State<Signature> {
     return Stack(
       children: <Widget>[
         GestureDetector(
-          onPanUpdate: _panUpdate,
+          onTapUp: (TapUpDetails details) => _addNewPoint(details.globalPosition),
+          onPanUpdate: (DragUpdateDetails details) => _addNewPoint(details.globalPosition),
           onPanEnd: (DragEndDetails details) => _points.add(null),
         ),
         CustomPaint(painter: SignaturePainter(points: _points))
